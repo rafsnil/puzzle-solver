@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class ResponseDTO {
+    String algorithmUsed;
     List<State> solutionPath;
     int expandedNodes;
     int maxDepth;

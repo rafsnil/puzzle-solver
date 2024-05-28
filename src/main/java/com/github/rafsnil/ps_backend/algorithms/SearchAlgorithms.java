@@ -1,5 +1,6 @@
 package com.github.rafsnil.ps_backend.algorithms;
 
+import com.github.rafsnil.ps_backend.constants.Algorithm;
 import com.github.rafsnil.ps_backend.dto.ResponseDTO;
 import com.github.rafsnil.ps_backend.puzzle.Puzzle;
 import com.github.rafsnil.ps_backend.tracker.Node;
@@ -12,7 +13,7 @@ public class SearchAlgorithms {
     public ResponseDTO breadthFirstSearch(Puzzle puzzle) {
         Queue<Node> frontier = new LinkedList<>();
         Set<State> explored = new HashSet<>();
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
 
         Node root = new Node(puzzle.toState(null, 0, 0), null);
         frontier.add(root);
@@ -24,15 +25,16 @@ public class SearchAlgorithms {
             Node node = frontier.poll();
             expandedNodes++;
             maxDepth = Math.max(maxDepth, node.getDepth());
-            totalCost = node.getCost();
+            totalCost = expandedNodes;
 
             if (node.getState().getPuzzle().isGoalState()) {
                 return ResponseDTO.builder()
+                        .algorithmUsed(Algorithm.BFS.toString())
                         .solutionPath(constructPath(node))
                         .expandedNodes(expandedNodes)
                         .maxDepth(maxDepth)
                         .cost(totalCost)
-                        .executionTimeInMilliSeconds(System.currentTimeMillis() - startTime)
+                        .executionTimeInMilliSeconds(System.nanoTime() - startTime)
                         .build();
             }
             explored.add(node.getState());
@@ -44,14 +46,14 @@ public class SearchAlgorithms {
                 }
             }
         }
-        return new ResponseDTO(Collections.emptyList(), expandedNodes, maxDepth, System.currentTimeMillis() - startTime, 0);
+        return new ResponseDTO(Algorithm.BFS.toString(),Collections.emptyList(), expandedNodes, maxDepth, System.currentTimeMillis() - startTime, 0);
     }
 
     //DFS
     public ResponseDTO depthFirstSearch(Puzzle puzzle) {
         Stack<Node> frontier = new Stack<>();
         Set<State> explored = new HashSet<>();
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
 
         Node root = new Node(puzzle.toState(null, 0, 0), null);
         frontier.push(root);
@@ -64,15 +66,16 @@ public class SearchAlgorithms {
 
             expandedNodes++;
             maxDepth = Math.max(maxDepth, node.getDepth());
-            totalCost = node.getCost();
+            totalCost = expandedNodes;
 
             if (node.getState().getPuzzle().isGoalState()) {
                 return ResponseDTO.builder()
+                        .algorithmUsed(Algorithm.DFS.toString())
                         .solutionPath(constructPath(node))
                         .expandedNodes(expandedNodes)
                         .maxDepth(maxDepth)
                         .cost(totalCost)
-                        .executionTimeInMilliSeconds(System.currentTimeMillis() - startTime)
+                        .executionTimeInMilliSeconds(System.nanoTime() - startTime)
                         .build();
             }
             explored.add(node.getState());
@@ -84,14 +87,14 @@ public class SearchAlgorithms {
                 }
             }
         }
-        return new ResponseDTO(Collections.emptyList(), expandedNodes, maxDepth, System.currentTimeMillis() - startTime, 0);
+        return new ResponseDTO(Algorithm.DFS.toString(),Collections.emptyList(), expandedNodes, maxDepth, System.currentTimeMillis() - startTime, 0);
     }
 
     //A* Search
     public ResponseDTO aStarSearch(Puzzle puzzle) {
         PriorityQueue<Node> frontier = new PriorityQueue<>(Comparator.comparingInt(n -> n.getState().getCost() + n.getState().getHeuristic()));
         Set<State> explored = new HashSet<>();
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
 
         Node root = new Node(puzzle.toState(null, 0, 0), null);
         frontier.add(root);
@@ -103,15 +106,16 @@ public class SearchAlgorithms {
             Node node = frontier.poll();
             expandedNodes++;
             maxDepth = Math.max(maxDepth, node.getDepth());
-            totalCost = node.getCost();
+            totalCost = expandedNodes;
 
             if (node.getState().getPuzzle().isGoalState()) {
                 return ResponseDTO.builder()
+                        .algorithmUsed(Algorithm.A_STAR.toString())
                         .solutionPath(constructPath(node))
                         .expandedNodes(expandedNodes)
                         .maxDepth(maxDepth)
                         .cost(totalCost)
-                        .executionTimeInMilliSeconds(System.currentTimeMillis() - startTime)
+                        .executionTimeInMilliSeconds(System.nanoTime() - startTime)
                         .build();
             }
             explored.add(node.getState());
@@ -123,7 +127,7 @@ public class SearchAlgorithms {
                 }
             }
         }
-        return new ResponseDTO(Collections.emptyList(), expandedNodes, maxDepth, System.currentTimeMillis() - startTime, 0);
+        return new ResponseDTO(Algorithm.A_STAR.toString(),Collections.emptyList(), expandedNodes, maxDepth, System.currentTimeMillis() - startTime, 0);
     }
 
     //Greedy Best First Search
@@ -135,22 +139,23 @@ public class SearchAlgorithms {
         frontier.add(root);
         int expandedNodes = 0;
         int maxDepth = 0;
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
         int totalCost;
 
         while (!frontier.isEmpty()) {
             Node node = frontier.poll();
             expandedNodes++;
             maxDepth = Math.max(maxDepth, node.getDepth());
-            totalCost = node.getCost();
+            totalCost = expandedNodes;
 
             if (node.getState().getPuzzle().isGoalState()) {
                 return ResponseDTO.builder()
+                        .algorithmUsed(Algorithm.GREEDY_BEST_FIRST.toString())
                         .solutionPath(constructPath(node))
                         .expandedNodes(expandedNodes)
                         .maxDepth(maxDepth)
                         .cost(totalCost)
-                        .executionTimeInMilliSeconds(System.currentTimeMillis() - startTime)
+                        .executionTimeInMilliSeconds(System.nanoTime() - startTime)
                         .build();
             }
             explored.add(node.getState());
@@ -162,21 +167,23 @@ public class SearchAlgorithms {
                 }
             }
         }
-        return new ResponseDTO(Collections.emptyList(), expandedNodes, maxDepth, System.currentTimeMillis() - startTime, 0);
+        return new ResponseDTO(Algorithm.GREEDY_BEST_FIRST.toString(),Collections.emptyList(), expandedNodes, maxDepth, System.currentTimeMillis() - startTime, 0);
     }
 
     //Iterative Deepening Search
     public ResponseDTO iterativeDeepeningSearch(Puzzle puzzle) {
-        long startTime = System.currentTimeMillis(); // Start the timer
+        long startTime = System.nanoTime();
+        int maxDepthLimit = 1000;
 
-        for (int depth = 0; ; depth++) {
+        for (int depth = 0; depth <= maxDepthLimit; depth++) {
             Set<State> explored = new HashSet<>();
             List<State> result = depthLimitedSearch(new Node(puzzle.toState(null, 0, 0), null), depth, explored);
             if (!result.isEmpty()) {
-                long executionTime = System.currentTimeMillis() - startTime;
-                int totalCost = result.get(result.size() - 1).getCost();
+                long executionTime = System.nanoTime() - startTime;
+                int totalCost = result.size() - 1;
 
                 return ResponseDTO.builder()
+                        .algorithmUsed(Algorithm.ITERATIVE_DEEPENING.toString())
                         .solutionPath(result)
                         .expandedNodes(explored.size())
                         .maxDepth(depth)
@@ -185,6 +192,16 @@ public class SearchAlgorithms {
                         .build();
             }
         }
+
+        long executionTime = System.currentTimeMillis() - startTime;
+        return ResponseDTO.builder()
+                .algorithmUsed(Algorithm.ITERATIVE_DEEPENING.toString())
+                .solutionPath(Collections.emptyList())
+                .expandedNodes(0)
+                .maxDepth(maxDepthLimit)
+                .executionTimeInMilliSeconds(executionTime)
+                .cost(0)
+                .build();
     }
 
     //Depth Limited Search
@@ -197,7 +214,6 @@ public class SearchAlgorithms {
             }
         }
         explored.add(node.getState());
-        boolean isCutoff = false;
 
         Puzzle puzzle = node.getState().getPuzzle();
         for (Puzzle successor : puzzle.getSuccessors()) {
@@ -206,15 +222,35 @@ public class SearchAlgorithms {
                 List<State> result = depthLimitedSearch(child, depth - 1, explored);
                 if (!result.isEmpty()) {
                     return result;
-                } else {
-                    isCutoff = true;
                 }
             }
         }
-        return isCutoff ? Collections.emptyList() : constructPath(node);
+        explored.remove(node.getState()); // Remove from explored if not fully expanded
+        return Collections.emptyList();
     }
 
-//    public List<State> iterativeDeepeningSearch(Puzzle puzzle) {
+    private List<State> constructPath(Node node) {
+        List<State> path = new ArrayList<>();
+        while (node != null) {
+            path.add(node.getState());
+            node = node.getParent();
+        }
+        Collections.reverse(path);
+        return path;
+    }
+
+
+    private boolean containsState(Collection<Node> frontier, State state) {
+        for (Node node : frontier) {
+            if (node.getState().equals(state)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    //    public List<State> iterativeDeepeningSearch(Puzzle puzzle) {
 //        for (int depth = 0; ; depth++) {
 //            Set<State> explored = new HashSet<>();
 //            List<State> result = depthLimitedSearch(new Node(puzzle.toState(null, 0, 0), null), depth, explored);
@@ -249,23 +285,4 @@ public class SearchAlgorithms {
 //        }
 //        return isCutoff ? Collections.emptyList() : constructPath(node);
 //    }
-
-    private boolean containsState(Collection<Node> frontier, State state) {
-        for (Node node : frontier) {
-            if (node.getState().equals(state)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private List<State> constructPath(Node node) {
-        List<State> path = new ArrayList<>();
-        while (node != null) {
-            path.add(node.getState());
-            node = node.getParent();
-        }
-        Collections.reverse(path);
-        return path;
-    }
 }
