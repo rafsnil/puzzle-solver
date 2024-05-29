@@ -5,7 +5,7 @@ import com.github.rafsnil.ps_backend.dto.ResponseDTO;
 import java.util.List;
 
 public class Utils {
-    public static void printResponseTableInTabularFormat(List<ResponseDTO> responses) {
+    public static void printPerformanceMetrics(List<ResponseDTO> responses) {
         System.out.println("------------------------------------------------------------------------------");
         System.out.println("                              PERFORMANCE METRICS                             ");
         System.out.println("------------------------------------------------------------------------------");

@@ -41,7 +41,7 @@ class PsBackendApplicationTests {
                 solution5
         );
 
-        Utils.printResponseTableInTabularFormat(responses);
+        Utils.printPerformanceMetrics(responses);
 
     }
 
@@ -98,7 +98,7 @@ class PsBackendApplicationTests {
                 solution5
         );
 
-        Utils.printResponseTableInTabularFormat(responses);
+        Utils.printPerformanceMetrics(responses);
 
     }
 
